@@ -1,5 +1,5 @@
 import React, {useMemo, useCallback, useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, ProgressBarAndroid, Platform} from 'react-native';
 import {Header, Button} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import {ProgressView} from '@react-native-community/progress-view';
@@ -7,6 +7,7 @@ import ImagePicker from 'react-native-image-picker';
 
 // const MiniLoader = requireNativeComponent('Boostrap');
 
+console.log('Platform', Platform.OS)
 const statusMap = {
   0: '载入bundle...',
   1: '启动中',
@@ -66,7 +67,6 @@ export default () => {
 
   const openCamera = useCallback(() => {
     ImagePicker.launchCamera(options, (response) => {
-      console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -85,7 +85,9 @@ export default () => {
     <View style={[styles.container]}>
       {Head}
       {progress !== 1 && (
-        <ProgressView progressTintColor="red" progress={progress} />
+        Platform.OS === 'ios'
+        ? <ProgressView progressTintColor="red" progress={progress} />
+        : <ProgressBarAndroid progressTintColor="red" progress={progress} />
       )}
       <View style={[styles.actionContainer]}>
         {progress !== 1 ? (

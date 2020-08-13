@@ -1,19 +1,16 @@
 import React, {useCallback, useRef, useState, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ProgressBarAndroid, Platform} from 'react-native';
 import {ProgressView} from '@react-native-community/progress-view';
 import {WebView} from 'react-native-webview';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-picker';
-// var ImagePicker = require('react-native-image-picker');
-
-
-
 
 const html = `
 <html>
 <head>
   <title>拍照小程序</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0" />
 </head>
 <body>
   <button onClick="takePhoto()" style="width: 200px; height: 50px;">拍照</button>
@@ -54,9 +51,8 @@ export default () => {
 
   const onMessage = useCallback((evt) => {
     console.log('evt', evt.nativeEvent.data);
-    const message = evt.nativeEvent.data;
-    ImagePicker.launchImageLibrary(options, (response) => {
-      console.log('Response = ', response);
+    ImagePicker.launchCamera(options, (response) => {
+      console.log('Response = ', Object.keys(response));
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -64,10 +60,15 @@ export default () => {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const source = { uri: response.uri };
-        this.setState({
-          avatarSource: source,
-        });
+        const jsString = `
+          var img = document.createElement('img');
+          img.style.cssText="width: 100%;height: 500px";
+          img.src="data:image/jpeg;base64,${response.data}";
+          document.querySelector('body').appendChild(img);
+          true;
+        `;
+        console.log('jsString', jsString);
+        webviewRef.current.injectJavaScript(jsString);
       }
     });
   }, []);
@@ -85,7 +86,9 @@ export default () => {
     <View style={[styles.container]}>
       {Head}
       {progress !== 1 && (
-        <ProgressView progressTintColor="red" progress={progress} />
+        Platform.OS === 'ios'
+        ? <ProgressView progressTintColor="red" progress={progress} />
+        : <ProgressBarAndroid progressTintColor="red" progress={progress} />
       )}
       <WebView
         originWhitelist={['*']}

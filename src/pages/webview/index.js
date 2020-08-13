@@ -1,19 +1,9 @@
 import React, {useCallback, useRef, useState, useMemo} from 'react';
-import {StyleSheet, View } from 'react-native';
+import {StyleSheet, View, Platform, ProgressBarAndroid } from 'react-native';
 import { ProgressView } from '@react-native-community/progress-view'
 import {WebView} from 'react-native-webview';
-// import Header from './../common/components/header';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
-
-
-// const LeftComponent = () => {
-//   return (
-//     <View>
-//       <I
-//     </View>
-//   );
-// }
 
 export default () => {
   const navigation = useNavigation(null);
@@ -44,7 +34,9 @@ export default () => {
     <View style={[styles.container]}>
       {Head}
       {progress !== 1 && (
-        <ProgressView progressTintColor="red" progress={progress} />
+        Platform.OS === 'ios'
+        ? <ProgressView progressTintColor="red" progress={progress} />
+        : <ProgressBarAndroid progressTintColor="red" progress={progress} />
       )}
       <WebView
         originWhitelist={['*']}
