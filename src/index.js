@@ -11,52 +11,43 @@ import Webview from './pages/webview';
 import Shoot from './pages/shoots';
 import Miniprogram from './pages/mini-loader';
 
-const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-const CatelogueStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerShown: false,
-          // headerRight: () => <Text>xx</Text>,
-        }}
-      />
-      <Stack.Screen
-        name="Web"
-        component={Webview}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Shoot"
-        component={Shoot}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Miniprogram"
-        component={Miniprogram}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
 
 export default () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="小程序" component={CatelogueStack} />
-        </Tab.Navigator>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerShown: false,
+              // headerRight: () => <Text>xx</Text>,
+            }}
+          />
+          <Stack.Screen
+            name="Web"
+            component={Webview}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Shoot"
+            component={Shoot}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Miniprogram"
+            component={Miniprogram}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
   );
