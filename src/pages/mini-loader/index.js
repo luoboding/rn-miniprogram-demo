@@ -65,7 +65,7 @@ export default () => {
   }, []);
 
   const openCamera = useCallback(() => {
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.launchCamera(options, (response) => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
