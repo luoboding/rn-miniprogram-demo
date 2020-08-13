@@ -4,7 +4,8 @@ import {ProgressView} from '@react-native-community/progress-view';
 import {WebView} from 'react-native-webview';
 import {Header} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const html = `
 <html>
@@ -51,26 +52,43 @@ export default () => {
 
   const onMessage = useCallback((evt) => {
     console.log('evt', evt.nativeEvent.data);
-    ImagePicker.launchCamera(options, (response) => {
-      console.log('Response = ', Object.keys(response));
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        const jsString = `
-          var img = document.createElement('img');
-          img.style.cssText="width: 100%;height: 500px";
-          img.src="data:image/jpeg;base64,${response.data}";
-          document.querySelector('body').appendChild(img);
-          true;
-        `;
-        console.log('jsString', jsString);
-        webviewRef.current.injectJavaScript(jsString);
-      }
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      includeBase64: true,
+      cropping: false,
+    }).then(response => {
+      console.log('response:', response);
+      const jsString = `
+      var img = document.createElement('img');
+      img.style.cssText="width: 100%;height: 500px";
+      img.src="data:image/jpeg;base64,${response.data}";
+      document.querySelector('body').appendChild(img);
+      true;
+    `;
+    console.log('jsString', jsString);
+    webviewRef.current.injectJavaScript(jsString);
     });
+    // ImagePicker.(options, (response) => {
+    //   console.log('Response = ', Object.keys(response));
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else if (response.customButton) {
+    //     console.log('User tapped custom button: ', response.customButton);
+    //   } else {
+    //     const jsString = `
+    //       var img = document.createElement('img');
+    //       img.style.cssText="width: 100%;height: 500px";
+    //       img.src="data:image/jpeg;base64,${response.data}";
+    //       document.querySelector('body').appendChild(img);
+    //       true;
+    //     `;
+    //     console.log('jsString', jsString);
+    //     webviewRef.current.injectJavaScript(jsString);
+    //   }
+    // });
   }, []);
 
   const Head = useMemo(() => {
