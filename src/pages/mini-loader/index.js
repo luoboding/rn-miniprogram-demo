@@ -3,7 +3,8 @@ import {View, Text, StyleSheet, Image, ProgressBarAndroid, Platform} from 'react
 import {Header, Button} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import {ProgressView} from '@react-native-community/progress-view';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 // const MiniLoader = requireNativeComponent('Boostrap');
 
@@ -66,19 +67,26 @@ export default () => {
   }, []);
 
   const openCamera = useCallback(() => {
-    ImagePicker.launchCamera(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        const source = {uri: response.uri};
-        console.log('source', source);
-        setUrl(response.uri);
-      }
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: false,
+    }).then(response => {
+      setUrl(response.path);
     });
+    // ImagePicker.launchCamera(options, (response) => {
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else if (response.customButton) {
+    //     console.log('User tapped custom button: ', response.customButton);
+    //   } else {
+    //     const source = {uri: response.uri};
+    //     console.log('source', source);
+    //     setUrl(response.uri);
+    //   }
+    // });
   }, []);
 
   return (
